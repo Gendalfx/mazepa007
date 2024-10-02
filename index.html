@@ -70,28 +70,33 @@
         const daysCounterElement = document.getElementById("days-counter");
         const totalAccumulatedElement = document.getElementById("total-accumulated");
     
-        // Задайте время начала отсчёта
-        const startTime = new Date('2024-10-02T12:00:00+03:00'); // Укажите нужную дату и время начала отсчёта
+        // Укажите время начала отсчёта
+        const startTime = new Date('2024-10-02T12:00:00+03:00'); // Время начала отсчета
         const initialDebt = 1800; // Начальное значение долга
-
+    
         // Устанавливаем текст начала отсчета
         startTimeElement.textContent = startTime.toLocaleString(); // Отображаем время начала отсчета
     
-        async function fetchDebt() {
-            const now = new Date();
-            const elapsedTime = Math.floor((now - startTime) / 1000); // Прошедшее время в секундах
+        let lastUpdate = performance.now(); // Запоминаем последнее обновление
+    
+        function fetchDebt() {
+            const now = performance.now();
+            const elapsedTime = Math.floor((now - lastUpdate) / 1000); // Прошедшее время в секундах
+            lastUpdate = now; // Обновляем последнее время
+    
+            const totalElapsedSeconds = Math.floor((new Date() - startTime) / 1000); // Общее время с начала
             const increaseAmountPerSecond = (initialDebt * 0.05) / (86400); // 5% от 1800 грн в день, делим на секунды в дне
-            const newDebt = (initialDebt + (elapsedTime * increaseAmountPerSecond)).toFixed(4);
+            const newDebt = (initialDebt + (totalElapsedSeconds * increaseAmountPerSecond)).toFixed(4);
     
             // Обновляем отображаемое значение долга
             debtElement.textContent = `${newDebt} грн`;
             totalAccumulatedElement.textContent = `${newDebt} грн`;
-            
+    
             // Обновляем другие данные
-            reportTimeElement.innerText = now.toLocaleString();
-            
+            reportTimeElement.innerText = new Date().toLocaleString();
+    
             // Вычисляем количество дней с момента начала
-            let daysPassed = Math.floor(elapsedTime / (60 * 60 * 24));
+            let daysPassed = Math.floor(totalElapsedSeconds / (60 * 60 * 24));
             if (daysPassed < 0) daysPassed = 0; // Устанавливаем значение в 0, если оно отрицательное
             daysCounterElement.innerText = daysPassed;
         }
@@ -102,5 +107,6 @@
         // Начальная загрузка
         fetchDebt();
     </script>
+    
 </body>
 </html>
