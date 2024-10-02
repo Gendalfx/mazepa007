@@ -31,19 +31,41 @@
 
     <script>
         const debtElement = document.getElementById('debt');
+        const dailyIncreaseRate = 1.05;
+        const secondsInDay = 86400;
+        
+        let currentDebt;
+        let lastUpdateTime;
 
+        // Функция для получения данных с сервера
         async function fetchDebt() {
             try {
                 const response = await fetch('/api/debt');
                 const data = await response.json();
-                debtElement.textContent = `${data.debt} грн`;
+                
+                // Получаем начальное значение долга и текущее серверное время
+                currentDebt = parseFloat(data.debt);
+                lastUpdateTime = new Date(data.currentTime).getTime();
+
+                // Обновляем отображаемое значение
+                updateDebtDisplay();
             } catch (error) {
                 console.error('Ошибка получения данных:', error);
             }
         }
 
-        // Обновляем сумму каждые 5 секунд
-        setInterval(fetchDebt, 5000);
+        // Функция для расчёта текущего долга на основе времени, прошедшего с последнего обновления
+        function updateDebtDisplay() {
+            const now = new Date().getTime();
+            const timeDiffInSeconds = (now - lastUpdateTime) / 1000;
+            const growthFactor = Math.pow(dailyIncreaseRate, timeDiffInSeconds / secondsInDay);
+            const newDebt = currentDebt * growthFactor;
+            debtElement.textContent = `${newDebt.toFixed(6)} грн`;
+        }
+
+        // Обновляем отображаемую сумму каждые 10 секунд и получаем актуальные данные с сервера
+        setInterval(fetchDebt, 10000);  // Запрос к серверу каждые 10 секунд
+        setInterval(updateDebtDisplay, 1000);  // Обновление на клиенте каждую секунду
 
         // Начальная загрузка
         fetchDebt();

@@ -3,15 +3,15 @@ export default (req, res) => {
     const startTime = new Date('2024-10-01T00:00:00Z').getTime(); // Время начала отсчёта
     const currentTime = new Date().getTime();
     const timeDiffInSeconds = (currentTime - startTime) / 1000; // разница в секундах
-    
+  
     const dailyIncreaseRate = 1.05; // 5% в день
     const secondsInDay = 86400; // 24 часа * 60 минут * 60 секунд
     const growthFactor = Math.pow(dailyIncreaseRate, timeDiffInSeconds / secondsInDay);
   
-    // Вычисляем текущий долг
+    // Вычисляем текущее значение долга
     const currentDebt = startDebt * growthFactor;
   
-    // Возвращаем текущее значение долга с нужной точностью
-    res.status(200).json({ debt: currentDebt.toFixed(6) });
+    // Возвращаем текущее значение долга и время последнего обновления
+    res.status(200).json({ debt: currentDebt.toFixed(6), currentTime });
   };
   
