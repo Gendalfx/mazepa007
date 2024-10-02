@@ -79,7 +79,7 @@
     
         function fetchDebt() {
             const now = Date.now(); // Получаем текущее время в миллисекундах
-            const elapsedTime = Math.floor((now - startTime) / 1000); // Прошедшее время в секундах
+            const elapsedTime = (now - startTime) / 1000; // Прошедшее время в секундах
             const increaseAmountPerSecond = (initialDebt * 0.05) / 86400; // 5% от 1800 грн в день, делим на секунды в дне
             const newDebt = (initialDebt + (elapsedTime * increaseAmountPerSecond)).toFixed(4);
     
@@ -102,6 +102,7 @@
         // Начальная загрузка
         fetchDebt();
     </script>
+    
     
     
 </body>
