@@ -45,6 +45,20 @@
             background-color: #ffffff; /* Білий фон */
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Тінь */
         }
+        table {
+            width: 100%; /* Ширина таблиці */
+            border-collapse: collapse; /* Убираем двойные границы */
+            margin-top: 20px; /* Отступ сверху */
+        }
+        th, td {
+            border: 1px solid #d9534f; /* Красная граница */
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #d9534f; /* Красный фон для заголовка */
+            color: white; /* Белый текст */
+        }
     </style>
 </head>
 <body>
@@ -59,6 +73,22 @@
         <div class="stat">Загальна сума накопичена: ₴<span id="total-accumulated">1800.0000</span></div>
 
         <div id="report">Звіт: <span id="report-time"></span></div>
+
+        <!-- Таблиця для Кирюші -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Ім'я</th>
+                    <th>Сума боргу</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Кирюша</td>
+                    <td>₴500.00</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
     <img src="images/debt-image.jpg" alt="Віддай борг" style="max-width: 100%; height: auto; display: block; margin: 20px auto;">
@@ -69,41 +99,38 @@
         const startTimeElement = document.getElementById("start-time");
         const daysCounterElement = document.getElementById("days-counter");
         const totalAccumulatedElement = document.getElementById("total-accumulated");
-    
+
         // Укажите время начала отсчета
-        const startTime = new Date('2024-10-02T12:36:00+03:00').getTime(); // Время начала отсчета в миллисекундах
+        const startTime = new Date('2024-10-02T12:00:00+03:00').getTime(); // Время начала отсчета в миллисекундах
         const initialDebt = 1800; // Начальное значение долга
-    
+
         // Устанавливаем текст начала отсчета
         startTimeElement.textContent = new Date(startTime).toLocaleString(); // Отображаем время начала отсчета
-    
+
         function fetchDebt() {
             const now = Date.now(); // Получаем текущее время в миллисекундах
             const elapsedTime = (now - startTime) / 1000; // Прошедшее время в секундах
             const increaseAmountPerSecond = (initialDebt * 0.05) / 86400; // 5% от 1800 грн в день, делим на секунды в дне
             const newDebt = (initialDebt + (elapsedTime * increaseAmountPerSecond)).toFixed(4);
-    
+
             // Обновляем отображаемое значение долга
             debtElement.textContent = `${newDebt} грн`;
             totalAccumulatedElement.textContent = `${newDebt} грн`;
-    
+
             // Обновляем другие данные
             reportTimeElement.innerText = new Date(now).toLocaleString();
-    
+
             // Вычисляем количество дней с момента начала
             let daysPassed = Math.floor(elapsedTime / (60 * 60 * 24));
             if (daysPassed < 0) daysPassed = 0; // Устанавливаем значение в 0, если оно отрицательное
             daysCounterElement.innerText = daysPassed;
-    
+
             // Запланируем следующее обновление через 1000 мс
             setTimeout(fetchDebt, 1000);
         }
-    
+
         // Начальная загрузка
         fetchDebt();
     </script>
-    
-    
-    
 </body>
 </html>
