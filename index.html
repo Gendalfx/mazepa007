@@ -77,7 +77,7 @@
         async function fetchDebt() {
             const now = new Date();
             const elapsedTime = Math.floor((now - startTime) / 1000); // Прошедшее время в секундах
-            const increaseAmountPerSecond = (initialDebt * 0.05) / 86400; // 5% в день, делим на секунды в дне
+            const increaseAmountPerSecond = (initialDebt * 0.05) / (86400); // 5% от 1800 грн в день, делим на секунды в дне
             const newDebt = (initialDebt + (elapsedTime * increaseAmountPerSecond)).toFixed(4);
     
             // Обновляем отображаемое значение долга
@@ -98,6 +98,7 @@
         // Начальная загрузка
         fetchDebt();
     </script>
+    
     
 </body>
 </html>
