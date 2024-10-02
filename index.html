@@ -69,35 +69,35 @@
         const startTimeElement = document.getElementById("start-time");
         const daysCounterElement = document.getElementById("days-counter");
         const totalAccumulatedElement = document.getElementById("total-accumulated");
-
-        // Получаем данные с сервера
+    
+        // Задайте время начала отсчёта
+        const startTime = new Date('2024-10-02T12:00:00Z'); // Укажите нужную дату и время начала отсчёта
+        const initialDebt = 1800; // Начальное значение долга
+    
         async function fetchDebt() {
-            try {
-                const response = await fetch('/api/debt');
-                const data = await response.json();
-                
-                // Обновляем отображаемое значение долга
-                debtElement.textContent = `${data.debt} грн`;
-                totalAccumulatedElement.textContent = `${data.debt} грн`;
-                
-                const now = new Date();
-                reportTimeElement.innerText = now.toLocaleString();
-                
-                // Вычисляем количество дней с момента начала
-                const startTime = new Date('2024-10-02T00:00:00Z'); // Дата начала отсчёта
-                startTimeElement.innerText = startTime.toLocaleString();
-                const daysPassed = Math.floor((now - startTime) / (1000 * 60 * 60 * 24));
-                daysCounterElement.innerText = daysPassed;
-            } catch (error) {
-                console.error('Ошибка получения данных:', error);
-            }
+            const now = new Date();
+            const elapsedTime = Math.floor((now - startTime) / 1000); // Прошедшее время в секундах
+            const increaseAmountPerSecond = (initialDebt * 0.05) / 86400; // 5% в день, делим на секунды в дне
+            const newDebt = (initialDebt + (elapsedTime * increaseAmountPerSecond)).toFixed(4);
+    
+            // Обновляем отображаемое значение долга
+            debtElement.textContent = `${newDebt} грн`;
+            totalAccumulatedElement.textContent = `${newDebt} грн`;
+            
+            // Обновляем другие данные
+            reportTimeElement.innerText = now.toLocaleString();
+            
+            // Вычисляем количество дней с момента начала
+            const daysPassed = Math.floor(elapsedTime / (60 * 60 * 24));
+            daysCounterElement.innerText = daysPassed;
         }
-
+    
         // Обновляем данные каждую секунду
         setInterval(fetchDebt, 1000);
-
+    
         // Начальная загрузка
         fetchDebt();
     </script>
+    
 </body>
 </html>
