@@ -77,36 +77,32 @@
         // Устанавливаем текст начала отсчета
         startTimeElement.textContent = startTime.toLocaleString(); // Отображаем время начала отсчета
     
-        let lastUpdate = performance.now(); // Запоминаем последнее обновление
-    
         function fetchDebt() {
-            const now = performance.now();
-            const elapsedTime = Math.floor((now - lastUpdate) / 1000); // Прошедшее время в секундах
-            lastUpdate = now; // Обновляем последнее время
-    
-            const totalElapsedSeconds = Math.floor((new Date() - startTime) / 1000); // Общее время с начала
-            const increaseAmountPerSecond = (initialDebt * 0.05) / (86400); // 5% от 1800 грн в день, делим на секунды в дне
-            const newDebt = (initialDebt + (totalElapsedSeconds * increaseAmountPerSecond)).toFixed(4);
+            const now = new Date();
+            const elapsedTime = Math.floor((now - startTime) / 1000); // Прошедшее время в секундах
+            const increaseAmountPerSecond = (initialDebt * 0.05) / 86400; // 5% от 1800 грн в день, делим на секунды в дне
+            const newDebt = (initialDebt + (elapsedTime * increaseAmountPerSecond)).toFixed(4);
     
             // Обновляем отображаемое значение долга
             debtElement.textContent = `${newDebt} грн`;
             totalAccumulatedElement.textContent = `${newDebt} грн`;
     
             // Обновляем другие данные
-            reportTimeElement.innerText = new Date().toLocaleString();
+            reportTimeElement.innerText = now.toLocaleString();
     
             // Вычисляем количество дней с момента начала
-            let daysPassed = Math.floor(totalElapsedSeconds / (60 * 60 * 24));
+            let daysPassed = Math.floor(elapsedTime / (60 * 60 * 24));
             if (daysPassed < 0) daysPassed = 0; // Устанавливаем значение в 0, если оно отрицательное
             daysCounterElement.innerText = daysPassed;
-        }
     
-        // Обновляем данные каждую секунду
-        setInterval(fetchDebt, 1000);
+            // Запланируем следующее обновление через 1000 мс
+            setTimeout(fetchDebt, 1000);
+        }
     
         // Начальная загрузка
         fetchDebt();
     </script>
+    
     
 </body>
 </html>
