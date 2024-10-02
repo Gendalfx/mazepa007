@@ -31,13 +31,22 @@
 
     <script>
         const debtElement = document.getElementById('debt');
-        const socket = new WebSocket('ws://localhost:8080');
 
-        socket.onmessage = function(event) {
-            const data = JSON.parse(event.data);
-            // Увеличиваем количество нулей после запятой для лучшего визуального отображения
-            debtElement.textContent = `${data.debt.toFixed(6)} грн`;
-        };
+        async function fetchDebt() {
+            try {
+                const response = await fetch('/api/debt');
+                const data = await response.json();
+                debtElement.textContent = `${data.debt} грн`;
+            } catch (error) {
+                console.error('Ошибка получения данных:', error);
+            }
+        }
+
+        // Обновляем сумму каждые 5 секунд
+        setInterval(fetchDebt, 5000);
+
+        // Начальная загрузка
+        fetchDebt();
     </script>
 </body>
 </html>
