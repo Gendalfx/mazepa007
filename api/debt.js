@@ -11,7 +11,7 @@ export default (req, res) => {
     // Вычисляем текущее значение долга
     const currentDebt = startDebt * growthFactor;
   
-    // Возвращаем текущее значение долга и время последнего обновления
-    res.status(200).json({ debt: currentDebt.toFixed(6), currentTime });
+    // Возвращаем текущее значение долга
+    res.status(200).json({ debt: currentDebt.toFixed(6) });
   };
   
