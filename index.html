@@ -73,6 +73,9 @@
         // Задайте время начала отсчёта
         const startTime = new Date('2024-10-02T12:00:00+03:00'); // Укажите нужную дату и время начала отсчёта
         const initialDebt = 1800; // Начальное значение долга
+
+        // Устанавливаем текст начала отсчета
+        startTimeElement.textContent = startTime.toLocaleString(); // Отображаем время начала отсчета
     
         async function fetchDebt() {
             const now = new Date();
@@ -99,7 +102,5 @@
         // Начальная загрузка
         fetchDebt();
     </script>
-    
-    
 </body>
 </html>
