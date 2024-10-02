@@ -70,15 +70,15 @@
         const daysCounterElement = document.getElementById("days-counter");
         const totalAccumulatedElement = document.getElementById("total-accumulated");
     
-        // Укажите время начала отсчёта
-        const startTime = new Date('2024-10-02T12:00:00+03:00'); // Время начала отсчета
+        // Укажите время начала отсчета
+        const startTime = new Date('2024-10-02T12:00:00+03:00').getTime(); // Время начала отсчета в миллисекундах
         const initialDebt = 1800; // Начальное значение долга
     
         // Устанавливаем текст начала отсчета
-        startTimeElement.textContent = startTime.toLocaleString(); // Отображаем время начала отсчета
+        startTimeElement.textContent = new Date(startTime).toLocaleString(); // Отображаем время начала отсчета
     
         function fetchDebt() {
-            const now = new Date();
+            const now = Date.now(); // Получаем текущее время в миллисекундах
             const elapsedTime = Math.floor((now - startTime) / 1000); // Прошедшее время в секундах
             const increaseAmountPerSecond = (initialDebt * 0.05) / 86400; // 5% от 1800 грн в день, делим на секунды в дне
             const newDebt = (initialDebt + (elapsedTime * increaseAmountPerSecond)).toFixed(4);
@@ -88,7 +88,7 @@
             totalAccumulatedElement.textContent = `${newDebt} грн`;
     
             // Обновляем другие данные
-            reportTimeElement.innerText = now.toLocaleString();
+            reportTimeElement.innerText = new Date(now).toLocaleString();
     
             // Вычисляем количество дней с момента начала
             let daysPassed = Math.floor(elapsedTime / (60 * 60 * 24));
