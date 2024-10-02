@@ -3,36 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Довг</title>
+    <title>Віддай борг</title>
     <style>
         body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            font-family: 'Arial', sans-serif;
+            text-align: center;
             margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            padding: 0;
+            background-color: #f0f8ff; /* Світлий фон */
+            color: #333;
+        }
+        header {
+            background-color: #d9534f; /* Червоний колір заголовка */
+            padding: 20px 0;
+            color: white;
+            font-size: 2.5em;
+        }
+        #debt-amount {
+            font-size: 4em; /* Збільшений шрифт для кращої видимості */
+            color: #d9534f; /* Червоний колір для суми боргу */
+            margin: 20px 0;
+        }
+        .stat {
+            margin: 20px 0;
+            font-size: 1.5em;
+            background-color: #fff; /* Білий фон для статистик */
+            padding: 15px;
+            border-radius: 8px; /* Закруглені кути */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Тінь */
+        }
+        .footer {
+            margin-top: 50px;
+            font-size: 0.9em;
+            color: #777;
         }
         .container {
-            text-align: center;
-        }
-        .debt {
-            font-size: 3rem;
-            color: #333;
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            border-radius: 10px; /* Закруглені кути */
+            background-color: #ffffff; /* Білий фон */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Тінь */
         }
     </style>
 </head>
 <body>
+    <header>
+        Віддай борг
+    </header>
     <div class="container">
-        <h1>Довг твого друга:</h1>
-        <div class="debt" id="debt">1800.000000 грн</div>
+        <div id="debt-amount">₴<span id="debt">1800.0000</span></div> <!-- Збільшена кількість знаків -->
+        
+        <div class="stat">Початок відліку: <span id="start-time"></span></div>
+        <div class="stat">Кількість днів: <span id="days-counter">0</span></div>
+        <div class="stat">Загальна сума накопичена: ₴<span id="total-accumulated">1800.0000</span></div>
+
+        <div id="report">Звіт: <span id="report-time"></span></div>
     </div>
 
-    <script>
-        const debtElement = document.getElementById('debt');
+    <img src="images/debt-image.jpg" alt="Віддай борг" style="max-width: 100%; height: auto; display: block; margin: 20px auto;">
 
-        // Функция для получения данных с сервера
+    <script>
+        const debtElement = document.getElementById("debt");
+        const reportTimeElement = document.getElementById("report-time");
+        const startTimeElement = document.getElementById("start-time");
+        const daysCounterElement = document.getElementById("days-counter");
+        const totalAccumulatedElement = document.getElementById("total-accumulated");
+
+        // Получаем данные с сервера
         async function fetchDebt() {
             try {
                 const response = await fetch('/api/debt');
@@ -40,12 +78,22 @@
                 
                 // Обновляем отображаемое значение долга
                 debtElement.textContent = `${data.debt} грн`;
+                totalAccumulatedElement.textContent = `${data.debt} грн`;
+                
+                const now = new Date();
+                reportTimeElement.innerText = now.toLocaleString();
+                
+                // Вычисляем количество дней с момента начала
+                const startTime = new Date('2024-10-01T00:00:00Z'); // Дата начала отсчёта
+                startTimeElement.innerText = startTime.toLocaleString();
+                const daysPassed = Math.floor((now - startTime) / (1000 * 60 * 60 * 24));
+                daysCounterElement.innerText = daysPassed;
             } catch (error) {
                 console.error('Ошибка получения данных:', error);
             }
         }
 
-        // Обновляем отображаемую сумму каждую секунду с сервера
+        // Обновляем данные каждую секунду
         setInterval(fetchDebt, 1000);
 
         // Начальная загрузка
